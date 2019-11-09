@@ -6,7 +6,7 @@ MEMORY_REAL_TIME = 64
 MEMORY_USER = 960
 
 class MemoryManager
-  def allocate_process(process)
+  def self.allocate_process(process)
     memory_start = 0
     memory_end = 0
     # if process.user?
@@ -18,8 +18,9 @@ class MemoryManager
     if $memory.count(nil) >= process.block_count
       process.offset = $memory.find(nil)
       process.block_count.times do
-        $memory[$memory.find(nil)] = process.pid
+        $memory[$memory.index(nil)] = process.pid
       end
+      process.pid
     end
   end
 end

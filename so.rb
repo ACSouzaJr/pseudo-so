@@ -2,6 +2,7 @@
 
 require_relative 'file_manager'
 require_relative 'process_manager'
+require_relative 'memory_manager'
 
 # Fila de Escalonamento
 ready_process = []
@@ -21,9 +22,12 @@ $memory = Array.new(1024)
 
 File.open("procesu.txt", "r").each_line do |line|
   process_info = line.split(', ').map(&:to_i)
-
-  $memory[] = ProcessCall.new(*process_info)
+  process = ProcessCall.new(*process_info)
+  MemoryManager.allocate_process process
+  ProcessManager.processes << process
 end
+# puts ProcessManager.processes
+
 # Read operations file
 
 operations = IO.readlines('tesuto.txt')

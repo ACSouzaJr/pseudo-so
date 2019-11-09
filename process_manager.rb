@@ -4,7 +4,7 @@
 
 class ProcessCall
   @@pid_count = 0
-  attr_accessor :initialization_time, :priority, :cpu_time, :block_count, :printer, :scanner, :drivers, :disk_number, :pid
+  attr_accessor :initialization_time, :priority, :cpu_time, :block_count, :printer, :scanner, :drivers, :disk_number, :pid, :offset
   
   def initialize(initialization_time, priority, cpu_time, block_count, printer, scanner, drivers, disk_number)
     @initialization_time = initialization_time
@@ -29,5 +29,7 @@ class ProcessCall
 end
 
 class ProcessManager
-  
+  def self.processes
+    @@processes ||= []
+  end
 end

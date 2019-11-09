@@ -5,7 +5,6 @@ require_relative 'process_manager'
 require_relative 'memory_manager'
 
 # Fila de Escalonamento
-ready_process = []
 real_time_process = []
 user_process = []
 priority1_process = []
@@ -18,15 +17,18 @@ DELETE = '1'
 # Memory - 1024 total - 64 real-time - 960 user
 $memory = Array.new(1024)
 
+puts ARGV[0]
+
 # Read Process file
 
 File.open("procesu.txt", "r").each_line do |line|
   process_info = line.split(', ').map(&:to_i)
   process = ProcessCall.new(*process_info)
   MemoryManager.allocate_process process
-  ProcessManager.processes << process
+  ProcessManager.ready_processes << process
 end
-# puts ProcessManager.processes
+# puts ProcessManager.ready_processes
+# puts $memory
 
 # Read operations file
 

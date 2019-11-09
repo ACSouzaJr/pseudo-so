@@ -29,7 +29,7 @@ class ProcessCall
 end
 
 class ProcessManager
-  def self.processes
-    @@processes ||= []
+  def self.ready_processes
+    @@ready_processes ||= []
   end
 end

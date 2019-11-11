@@ -17,7 +17,7 @@ DELETE = '1'
 # Memory - 1024 total - 64 real-time - 960 user
 $memory = Array.new(1024)
 
-puts ARGV[0]
+# puts ARGV[0]
 
 # Read Process file
 
@@ -32,7 +32,7 @@ end
 
 # Read operations file
 
-operations = IO.readlines('tesuto.txt')
+operations = IO.readlines('tesuto.txt').map(&:chomp)
 
 # Set disk size
 $disk = Array.new(operations.shift.to_i, 0)
@@ -41,10 +41,10 @@ $disk = Array.new(operations.shift.to_i, 0)
 occupied_segment_number = operations.shift.to_i
 
 occupied_segment_number.times do
-  segment = operations.shift.chomp.split(', ')
+  segment = operations.shift.split(', ')
   segment_name, first_block, block_count = segment
   # Operacao de alocacao de disco
-  initialize_disk segment_name, first_block, block_count
+  FileManager.initialize_disk segment_name, first_block, block_count
 end
 # puts $disk
 

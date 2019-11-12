@@ -4,27 +4,41 @@
 
 class ProcessCall
   @@pid_count = 0
-  attr_accessor :initialization_time, :priority, :cpu_time, :block_count, :printer, :scanner, :drivers, :disk_number, :pid, :offset
+  attr_accessor :initialization_time, :priority, :cpu_time, :block_count, :printer, :scanner, :modem, :disk_number, :pid, :offset
   
-  def initialize(initialization_time, priority, cpu_time, block_count, printer, scanner, drivers, disk_number)
+  def initialize(initialization_time, priority, cpu_time, block_count, printer, scanner, modem, driver)
     @initialization_time = initialization_time
     @priority = priority
     @cpu_time = cpu_time
     @block_count = block_count
     @printer = printer
     @scanner = scanner
-    @drivers = drivers
-    @disk_number = disk_number
+    @modem = modem
+    @driver = driver # disk_number
     @offset = 0
     @pid = @@pid_count
     @@pid_count += 1
   end
 
-  def user?
-    @priority > 0
+  def log
+    puts "\tPID: #{@pid}\n" \
+         "\toffset: #{@offset}\n" \
+         "\tblocks: #{@block_count}\n" \
+         "\tpriority: #{@priority}\n" \
+         "\ttime: #{@cpu_time}\n" \
+         "\tprinters: #{@printer}\n" \
+         "\tscanners: #{@scanner}\n" \
+         "\tmodems: #{@modem}\n" \
+         "\tdrivers: #{@driver}\n\n"
   end
+  
+
+  def user?
+    @priority.positive?
+  end
+
   def real_time?
-    @priority == 0
+    @priority.zero?
   end
 end
 

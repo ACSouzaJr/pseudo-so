@@ -54,7 +54,7 @@ class FileManager
     end
   end
 
-  def deleta_arquivo(file):
+  def deleta_arquivo(file)
     disk[file.first_block..(file.block_count + file.first_block)] = file.block_count * [0]
   end
 end

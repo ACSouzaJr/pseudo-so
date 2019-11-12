@@ -26,6 +26,7 @@ File.open("procesu.txt", "r").each_line do |line|
   process = ProcessCall.new(*process_info)
   MemoryManager.allocate_process process
   ProcessManager.ready_processes << process
+  process.log
 end
 # puts ProcessManager.ready_processes
 # puts $memory

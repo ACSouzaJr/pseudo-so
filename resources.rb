@@ -10,31 +10,31 @@ class Resources
     sata = []
     free = true
 
-    if process[@requisicao_modem] > 0 && modem[0] != nil
+    if process.modem > 0 && modem[0] != nil
       free = false
     end
-    if process[@requisicao_scanner] > 0 && scanner[0] != nil
+    if process.scanner > 0 && scanner[0] != nil
       free = false
     end
-    if process[@numero_impressora] > 0 && printer[process[numero_impressora] - 1] != nil
+    if process.printer > 0 && printer[process[printer] - 1] != nil
       free = false
     end
-    if process[@numero_disco] > 0 && sata[process[numero_disco] - 1] != nil
+    if process.driver > 0 && sata[process[driver] - 1] != nil
       free = false
     end
 
     if free
-      if process[@requisicao_modem] > 0
-        modem[0] = process[@pid]
+      if process.modem > 0
+        modem[0] = process.pid
       end
-      if process[@requisicao_scanner] > 0
-        scanner[0] = process[@pid]
+      if process.scanner > 0
+        scanner[0] = process.pid
       end
-      if process[@numero_impressora] > 0
-        printer[process[@numero_impressora] - 1] = process[@pid]
+      if process.printer > 0
+        printer[process.printer - 1] = process.pid
       end
-      if process[@numero_disco] > 0
-        printer[process[@numero_disco] - 1] = process[@pid]
+      if process.driver > 0
+        printer[process.driver - 1] = process.pid
       end
       return true
     else
@@ -43,17 +43,17 @@ class Resources
   end
     
   def free_io(process)
-    if modem[0] == process[@pid]
+    if modem[0] == process.pid
       modem[0] = nil
     end
-    if scanner[0] == process[@pid]
+    if scanner[0] == process.pid
       scanner[0] = nil
     end
-    if printer.include? process[@pid]
-      printer[process[@numero_impressora] - 1] = nil
+    if printer.include? process.pid
+      printer[process.printer - 1] = nil
     end
-    if sata.include? process[@pid]
-      sata[process[@numero_disco] - 1] = nil
+    if sata.include? process.pid
+      sata[process.driver - 1] = nil
     end
   end
 end

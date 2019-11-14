@@ -31,7 +31,6 @@ class ProcessCall
          "\tmodems: #{@modem}\n" \
          "\tdrivers: #{@driver}\n\n"
   end
-  
 
   def user?
     @priority.positive?
@@ -43,7 +42,45 @@ class ProcessCall
 end
 
 class ProcessManager
+  # Fila de Escalonamento
+  @@real_time_process = []
+  @@user_process = []
+  @@priority1_process = []
+  @@priority2_process = []
+  @@priority3_process = []
+
   def self.ready_processes
     @@ready_processes ||= []
   end
+
+  def self.schedule
+    return if @@ready_processes.empty?
+
+    @@ready_processes.sort_by(&:priority)
+    if @@ready_processes.first.real_time?
+      @@real_time_process << @@ready_processes.shift
+    elsif @@ready_processes.first.user?
+      @@user_process << @@ready_processes.shift
+    end
+  end
+
+  def self.schedule_user_process
+    return if @@user_process.empty?
+    if @@user_process.first.priority == 1
+      @@priority1_process << @@user_process.shift
+    elsif @@user_process.first.priority == 2
+      @@priority2_process << @@user_process.shift
+    elsif @@user_process.first.priority == 3
+      @@priority3_process << @@user_process.shift
+    end
+  end
+
+  def self.execute
+    # while schedule;
+    # while schedule_user_process;
+
+    
+    
+  end
+  
 end

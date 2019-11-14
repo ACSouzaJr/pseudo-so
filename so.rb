@@ -56,10 +56,11 @@ operations.each do |operation_info|
 
   if opcode == CREATE
     created_blocks_count, process_operation = operation[3..-1]
-    # puts created_blocks_count, process_operation
+    puts created_blocks_count, process_operation
   elsif opcode == DELETE
     process_operation = operation[3..-1]
-    # puts process_operation
+    puts process_operation
   end
+  puts '------------'
   # executar processos
 end

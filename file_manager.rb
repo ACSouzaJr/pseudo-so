@@ -13,7 +13,10 @@ end
 
 class FileManager
 
-  @@all_files = []
+  def all_files
+    @@all_files ||= {}
+  end
+  
 
   def self.initialize_disk(segment_name, first_block, block_count)
     block_count.to_i.times do |offset|
@@ -22,29 +25,29 @@ class FileManager
   end
 
   # recebe um Diskfile
-  def create_file(file)
+  def self.create_file(pid, file_name, block_count)
     # posição inicial
     offset = 0
     # espaço disponível
     allocable_files = 0
 
     # Procura se o arquivo já existe
-    if ($disk.include? file)
+    if ($disk.include? file_name)
       puts 'O arquivo já está na memória'
     end
 
     #localiza espaco disponivel com First Fit e armazena
 
-    disk.length.times do |i|
+    $disk.length.times do |i|
       block = $disk[i]
       # Se o bloco estiver vazio
-      if(block == 0)
+      if block == 0
         allocable_files += 1
         # Se o tamanho disponível for suficiente
-        if allocable_files == file.block_count
+        if allocable_files == block_count
           offset = i - allocable_files + 1
-          disk[offset..(offset + allocable_files)] = file.block_count * [nome]
-          @@all_files << file
+          $disk[offset..(offset + allocable_files)] = block_count * [nome]
+          all_files << { file_name => DiskFile.new(file_name, offset, block_count, pid) }
           puts 'O processo {} criou o arquivo {} (blocos {})'
         end
       else
@@ -54,7 +57,8 @@ class FileManager
     end
   end
 
-  def deleta_arquivo(file)
-    disk[file.first_block..(file.block_count + file.first_block)] = file.block_count * [0]
+  def self.delete_file(file_name)
+    all_files.key? file_name
+    disk[first_block..(block_count + first_block)] = block_count * [0]
   end
 end

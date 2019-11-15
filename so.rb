@@ -57,9 +57,12 @@ operations.each do |operation_info|
   if opcode == CREATE
     created_blocks_count, process_operation = operation[3..-1]
     puts created_blocks_count, process_operation
+    # FileManager.create_file(pid, file_name, created_blocks_count)
   elsif opcode == DELETE
     process_operation = operation[3..-1]
     puts process_operation
+    # return if ProcessManager.ready_processes[pid.to_i].user?
+    # FileManager.delete_file(file_name)
   end
   puts '------------'
   # executar processos

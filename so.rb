@@ -14,18 +14,19 @@ priority3_process = []
 CREATE = '0'
 DELETE = '1'
 
-# Memory - 1024 total - 64 real-time - 960 user
-$memory = Array.new(1024)
-
 # puts ARGV[0]
+
+# initialize processes
+memory_manager = MemoryManager.new
+process_manager = ProcessManager.new
 
 # Read Process file
 
 File.open("procesu.txt", "r").each_line do |line|
   process_info = line.split(', ').map(&:to_i)
   process = ProcessCall.new(*process_info)
-  MemoryManager.allocate_process process
-  ProcessManager.ready_processes << process
+  memory_manager.allocate_process process
+  process_manager.ready_processes << process
   process.log
 end
 # puts ProcessManager.ready_processes
@@ -35,9 +36,7 @@ end
 
 operations = IO.readlines('tesuto.txt').map(&:chomp)
 
-# Set disk size
-$disk = Array.new(operations.shift.to_i, 0)
-# puts disk
+file_manager = FileManager.new(operations.shift.to_i)
 
 occupied_segment_number = operations.shift.to_i
 
@@ -45,7 +44,7 @@ occupied_segment_number.times do
   segment = operations.shift.split(', ')
   segment_name, first_block, block_count = segment
   # Operacao de alocacao de disco
-  FileManager.initialize_disk segment_name, first_block, block_count
+  file_manager.initialize_disk segment_name, first_block, block_count
 end
 # puts $disk
 

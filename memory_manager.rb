@@ -6,7 +6,13 @@ MEMORY_REAL_TIME = 64
 MEMORY_USER = 960
 
 class MemoryManager
-  def self.allocate_process(process)
+
+  def initialize
+    # Memory - 1024 total - 64 real-time - 960 user
+    @memory = Array.new(1024)
+  end
+
+  def allocate_process(process)
     memory_start = 0
     memory_end = 1024
     if process.user?
@@ -15,16 +21,14 @@ class MemoryManager
       memory_end = MEMORY_USER
     end
 
-    if $memory[memory_start..memory_end].count(nil) >= process.block_count
-      process.offset = $memory[memory_start..memory_end].index(nil)
-      process.block_count.times do
-        $memory[$memory[memory_start..memory_end].index(nil)] = process.pid
-      end
+    if @memory[memory_start..memory_end].count(nil) >= process.block_count
+      process.offset = @memory[memory_start..memory_end].index(nil)
+      @memory[process.offset..(process.offset + process.block_count)] = [process.pid] * process.block_count
       process.pid
     end
   end
 
-  def self.deallocate_process(process)
-    $memory[process.offset..(process.block_count + process.offset)] = process.block_count * [nil]
+  def deallocate_process(process)
+    @memory[process.offset..(process.block_count + process.offset)] = process.block_count * [nil]
   end
 end

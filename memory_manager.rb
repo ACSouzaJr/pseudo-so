@@ -6,6 +6,7 @@ MEMORY_REAL_TIME = 64
 MEMORY_USER = 960
 
 class MemoryManager
+  attr_reader :memory
 
   def initialize
     # Memory - 1024 total - 64 real-time - 960 user

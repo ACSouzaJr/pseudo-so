@@ -34,7 +34,7 @@ class FileManager
       file_name, offset, block_count = block
       # Operacao de alocacao de disco
       @disk[offset.to_i..(offset.to_i + block_count.to_i) - 1] = [file_name] * block_count.to_i
-      puts "Disco: #{@disk}"
+      print_disk
       @all_files[file_name] = DiskFile.new(file_name, offset.to_i, block_count.to_i, nil)
     end
 
@@ -54,7 +54,7 @@ class FileManager
         process_operation: operation.last.to_i
       }
     end
-    puts @instructions
+    # puts @instructions
   end
 
   def create_file(pid, file_name, block_count)
@@ -70,7 +70,7 @@ class FileManager
     end
 
     # Localiza espaco disponivel com First Fit e armazena
-
+    #
     @disk.length.times do |i|
       block = @disk[i]
       puts block
@@ -79,11 +79,12 @@ class FileManager
         allocable_files += 1
         # Se o tamanho disponível for suficiente
         if allocable_files == block_count.to_i
+          #6-2+1
           offset = i - allocable_files + 1
-          @disk[offset..(offset + allocable_files)] = [file_name] * block_count.to_i
+          @disk[offset..(offset + allocable_files) - 1] = [file_name] * block_count.to_i
           @all_files[file_name] = DiskFile.new(file_name, offset, block_count.to_i, pid.to_i)
-          puts "O processo #{pid} criou o arquivo #{file_name} (blocos #{block_count})"
-          return
+          print_disk
+          return puts "O processo #{pid} criou o arquivo #{file_name} (blocos #{block_count})"
         end
       else
         allocable_files = 0
@@ -98,7 +99,7 @@ class FileManager
     file = @all_files[file_name]
     # return puts "Processo não tem permissão." unless file.owner == process.pid || process.real_time?
     # puts file.block_count
-    # puts @disk
+    puts print_disk
     @disk[file.first_block..(file.block_count + file.first_block) - 1] = [0] * file.block_count
     puts "O processo #{pid} deletou o arquivo #{file_name}"
   end
@@ -112,5 +113,12 @@ class FileManager
         delete_file(instruction[:pid], instruction[:file_name])
       end
     end
+  end
+
+  def print_disk
+    print "\n"
+    print "| "
+    @disk.each { |file| print "#{file} | " }
+    print "\n"
   end
 end

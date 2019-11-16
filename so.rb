@@ -12,6 +12,7 @@ process_manager = ProcessManager.new(memory_manager)
 file_manager = FileManager.new
 
 file_manager.execute
+puts file_manager.print_disk
 puts file_manager.disk
 
 # # Read operations file

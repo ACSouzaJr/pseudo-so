@@ -11,6 +11,9 @@ memory_manager = MemoryManager.new
 process_manager = ProcessManager.new(memory_manager)
 file_manager = FileManager.new
 
+file_manager.execute
+puts file_manager.disk
+
 # # Read operations file
 # operations = IO.readlines('tesuto.txt').map(&:chomp)
 

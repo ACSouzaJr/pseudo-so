@@ -26,7 +26,7 @@ class FileManager
 
     disk_size = operations.shift.to_i
     @disk = Array.new(disk_size, 0)
-    
+
     occupied_block_count = operations.shift.to_i
     # Initialize disk
     occupied_block_count.times do
@@ -34,7 +34,7 @@ class FileManager
       file_name, offset, block_count = block
       # Operacao de alocacao de disco
       @disk[offset.to_i..(offset.to_i + block_count.to_i) - 1] = [file_name] * block_count.to_i
-      print_disk
+      # print_disk
       @all_files[file_name] = DiskFile.new(file_name, offset.to_i, block_count.to_i, nil)
     end
 
@@ -73,7 +73,7 @@ class FileManager
     #
     @disk.length.times do |i|
       block = @disk[i]
-      puts block
+      # puts block
       # Se o bloco estiver vazio
       if block == 0
         allocable_files += 1
@@ -83,7 +83,6 @@ class FileManager
           offset = i - allocable_files + 1
           @disk[offset..(offset + allocable_files) - 1] = [file_name] * block_count.to_i
           @all_files[file_name] = DiskFile.new(file_name, offset, block_count.to_i, pid.to_i)
-          print_disk
           return puts "O processo #{pid} criou o arquivo #{file_name} (blocos #{block_count})"
         end
       else
@@ -99,7 +98,6 @@ class FileManager
     file = @all_files[file_name]
     # return puts "Processo não tem permissão." unless file.owner == process.pid || process.real_time?
     # puts file.block_count
-    puts print_disk
     @disk[file.first_block..(file.block_count + file.first_block) - 1] = [0] * file.block_count
     puts "O processo #{pid} deletou o arquivo #{file_name}"
   end
@@ -112,6 +110,7 @@ class FileManager
       elsif instruction[:opcode] == DELETE
         delete_file(instruction[:pid], instruction[:file_name])
       end
+      print_disk
     end
   end
 

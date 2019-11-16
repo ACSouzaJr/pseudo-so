@@ -67,9 +67,9 @@ class ProcessManager
     return if @ready_processes.empty?
 
     @ready_processes.sort_by(&:priority)
-    if @ready_processes.first.real_time?
+    if @ready_processes.first.real_time? && @real_time_process.length < 1000
       @real_time_process << @ready_processes.shift
-    elsif @ready_processes.first.user?
+    elsif @ready_processes.first.user? && @user_process.length < 1000
       @user_process << @ready_processes.shift
     end
   end
@@ -77,11 +77,11 @@ class ProcessManager
   def schedule_user_process
     return if @user_process.empty?
 
-    if @user_process.first.priority == 1
+    if @user_process.first.priority == 1 && @user_process.length < 1000
       @priority1_process << @user_process.shift
-    elsif @user_process.first.priority == 2
+    elsif @user_process.first.priority == 2 && @user_process.length < 1000
       @priority2_process << @user_process.shift
-    elsif @user_process.first.priority == 3
+    elsif @user_process.first.priority == 3 && @user_process.length < 1000
       @priority3_process << @user_process.shift
     end
   end

@@ -99,16 +99,18 @@ class FileManager
     return puts "Processo #{process.pid} não tem permissão para deletar o arquivo #{file_name}" unless file.owner == process.pid || process.real_time?
     # puts file.block_count
     @disk[file.first_block..(file.block_count + file.first_block) - 1] = [0] * file.block_count
-    puts "O processo #{pid} deletou o arquivo #{file_name}"
+    puts "O processo #{process.pid} deletou o arquivo #{file_name}"
   end
 
   def execute(process)
-    process_instructions = @instructions.select { |inst| inst[:pid] == process.pid }
-
-    process_instructions.each_with_index do |instruction, index|
-      # if index != instruction[:process_operation]
-      #   puts "\tP#{process.pid} instruction #{instruction[:process_operation]} - CPU" 
-      # end
+    instruction = @instructions.select { |inst| inst[:pid] == process.pid && process.pc == inst[:process_operation] }.first
+    puts instruction
+    puts process
+    # instructions.each_with_index do |instruction, index|
+    # end
+      if instruction.nil?
+        return puts "\tP#{process.pid} instruction #{process.pc} - CPU" 
+      end
       puts "\tP#{process.pid} instruction #{instruction[:process_operation]}"
       if instruction[:opcode] == CREATE
         create_file(instruction[:pid], instruction[:file_name], instruction[:blocks_count])
@@ -116,7 +118,6 @@ class FileManager
         delete_file(process, instruction[:file_name])
       end
       print_disk
-    end
   end
 
   def print_disk

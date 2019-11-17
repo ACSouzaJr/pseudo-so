@@ -4,7 +4,7 @@
 
 class ProcessCall
   @@pid_count = 0
-  attr_accessor :initialization_time, :priority, :cpu_time, :block_count, :printer, :scanner, :modem, :disk_number, :pid, :offset
+  attr_accessor :initialization_time, :priority, :cpu_time, :block_count, :printer, :scanner, :modem, :disk_number, :pid, :offset, :pc
   
   def initialize(initialization_time, priority, cpu_time, block_count, printer, scanner, modem, driver)
     @initialization_time = initialization_time
@@ -18,6 +18,7 @@ class ProcessCall
     @offset = 0
     @pid = @@pid_count
     @@pid_count += 1
+    @pc = 0
   end
 
   def dispatcher

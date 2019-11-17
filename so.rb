@@ -47,15 +47,15 @@ until process_manager.queue_empty? do
   unless process_manager.process_running.nil?
 		#Decrementa tempo restante e aumenta o numero de instrucoes rodadas
 		process_manager.process_running.cpu_time -= 1
-        # process_manager.process_running['execucoes'] += 1
-        
+		
 		# Mostra Saida
 		# logger.executa(process_manager.process_running)
+		file_manager.execute(process_manager.process_running)
+		process_manager.process_running.pc += 1
 
 		# Após execucação do processo
 		# Processo é retirado da memória -> libera recursos ao final de seu tempo de CPU
 		if process_manager.process_running.cpu_time == 0
-			file_manager.execute(process_manager.process_running)
 			# io.libera(process_manager.process_running)
 			memory_manager.deallocate_process(process_manager.process_running)
 			process_manager.process_running = nil

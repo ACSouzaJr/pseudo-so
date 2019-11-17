@@ -19,7 +19,7 @@ process_manager.ready_processes.sort_by(&:initialization_time)
 # tempo de inicialização começa em 0
 tempo = 0
 
-until process_manager.queue_empty? do
+until process_manager.queue_empty? && process_manager.process_running.nil? do
 	# Verifica se existem processos em estado de pronto
 	unless process_manager.ready_processes.empty?
 		#Escalona processos do tempo de chegada = tempo
@@ -50,7 +50,7 @@ until process_manager.queue_empty? do
 		
 		# Mostra Saida
 		# logger.executa(process_manager.process_running)
-		file_manager.execute(process_manager.process_running)
+ 		file_manager.execute(process_manager.process_running)
 		process_manager.process_running.pc += 1
 
 		# Após execucação do processo

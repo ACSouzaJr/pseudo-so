@@ -104,20 +104,17 @@ class FileManager
 
   def execute(process)
     instruction = @instructions.select { |inst| inst[:pid] == process.pid && process.pc == inst[:process_operation] }.first
-    puts instruction
-    puts process
-    # instructions.each_with_index do |instruction, index|
-    # end
-      if instruction.nil?
-        return puts "\tP#{process.pid} instruction #{process.pc} - CPU" 
-      end
-      puts "\tP#{process.pid} instruction #{instruction[:process_operation]}"
-      if instruction[:opcode] == CREATE
-        create_file(instruction[:pid], instruction[:file_name], instruction[:blocks_count])
-      elsif instruction[:opcode] == DELETE
-        delete_file(process, instruction[:file_name])
-      end
-      print_disk
+    
+    if instruction.nil?
+      return puts "\tP#{process.pid} instruction #{process.pc} - CPU" 
+    end
+    puts "\tP#{process.pid} instruction #{instruction[:process_operation]}"
+    if instruction[:opcode] == CREATE
+      create_file(instruction[:pid], instruction[:file_name], instruction[:blocks_count])
+    elsif instruction[:opcode] == DELETE
+      delete_file(process, instruction[:file_name])
+    end
+    print_disk
   end
 
   def print_disk

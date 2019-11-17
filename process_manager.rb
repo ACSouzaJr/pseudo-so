@@ -44,6 +44,7 @@ end
 
 class ProcessManager
   attr_accessor :ready_processes, :process_running
+  attr_reader :real_time_process, :user_process, :priority1_process, :priority2_process, :priority3_process
 
   def initialize(memory_manager)
     # Fila de Escalonamento
@@ -66,7 +67,7 @@ class ProcessManager
   end
 
   def queue_empty?
-    @real_time_process.empty? && @user_process.empty? && @priority1_process.empty? && @priority2_process.empty? && @priority3_process.empty?
+    @ready_processes.empty? && @real_time_process.empty? && @user_process.empty? && @priority1_process.empty? && @priority2_process.empty? && @priority3_process.empty?
   end
 
   def schedule

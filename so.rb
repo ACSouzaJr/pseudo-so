@@ -23,7 +23,7 @@ until process_manager.queue_empty? do
 	# Verifica se existem processos em estado de pronto
 	unless process_manager.ready_processes.empty?
 		#Escalona processos do tempo de chegada = tempo
-		if process_manager.fila_principal.first.initialization_time == tempo
+		if process_manager.ready_processes.first.initialization_time == tempo
 			process_manager.schedule # real time ou usuário
 			process_manager.schedule_user_process # usuário 1, 2 ou 3
 		end
@@ -44,9 +44,9 @@ until process_manager.queue_empty? do
     end
 
   # Executa Processo
-  unless process_manager.process_running.empty?
+  unless process_manager.process_running.nil?
 		#Decrementa tempo restante e aumenta o numero de instrucoes rodadas
-		process_manager.process_running.initialization_time.cpu_time -= 1
+		process_manager.process_running.cpu_time -= 1
         # process_manager.process_running['execucoes'] += 1
         
 		# Mostra Saida
@@ -60,7 +60,7 @@ until process_manager.queue_empty? do
 			memory_manager.deallocate_process(process_manager.process_running)
 			process_manager.process_running = nil
 		# Quantum = 1 -> troca constante
-		elsif process_manager.process_running.priority.user?
+		elsif process_manager.process_running.user?
 			if process_manager.process_running.priority == 1
 				process_manager.prioridade_1.append(process_manager.process_running)
 			elsif process_manager.process_running.priority == 2

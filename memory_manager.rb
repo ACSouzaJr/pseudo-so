@@ -30,6 +30,6 @@ class MemoryManager
   end
 
   def deallocate_process(process)
-    @memory[process.offset..(process.block_count + process.offset)] = process.block_count * [nil]
+    @memory[process.offset..(process.block_count + process.offset)] = [nil] * process.block_count
   end
 end

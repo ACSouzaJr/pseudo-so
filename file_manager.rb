@@ -65,7 +65,7 @@ class FileManager
 
     # Procura se o arquivo já existe
     if @disk.include? file_name
-      puts 'O arquivo já está na memória'
+      puts 'O arquivo não pode ser criado porque já está na memória'
       return
     end
 
@@ -83,7 +83,7 @@ class FileManager
           offset = i - allocable_files + 1
           @disk[offset..(offset + allocable_files) - 1] = [file_name] * block_count.to_i
           @all_files[file_name] = DiskFile.new(file_name, offset, block_count.to_i, pid.to_i)
-          return puts "O processo #{pid} criou o arquivo #{file_name} (blocos #{block_count})"
+          return puts "O processo #{pid} criou o arquivo #{file_name} (blocos #{(offset..block_count).to_a.to_s})"
         end
       else
         allocable_files = 0
@@ -92,23 +92,28 @@ class FileManager
     puts "O processo #{pid} nao criou o arquivo #{file_name} (Sem espaco livre)"
   end
 
-  def delete_file(pid, file_name)
-    return puts "Arquivo #{file_name} no ecxiste em memoria." unless @all_files.key? file_name
+  def delete_file(process, file_name)
+    return puts "Arquivo #{file_name} não pode ser deletado porque no ecxiste em memoria." unless @all_files.key? file_name
 
     file = @all_files[file_name]
-    # return puts "Processo não tem permissão." unless file.owner == process.pid || process.real_time?
+    return puts "Processo #{process.pid} não tem permissão para deletar o arquivo #{file_name}" unless file.owner == process.pid || process.real_time?
     # puts file.block_count
     @disk[file.first_block..(file.block_count + file.first_block) - 1] = [0] * file.block_count
     puts "O processo #{pid} deletou o arquivo #{file_name}"
   end
 
-  def execute
-    # process_instructions = @instructions.select { |inst| inst[:pid] == process.pid }
-    @instructions.each do |instruction|
+  def execute(process)
+    process_instructions = @instructions.select { |inst| inst[:pid] == process.pid }
+
+    process_instructions.each_with_index do |instruction, index|
+      # if index != instruction[:process_operation]
+      #   puts "\tP#{process.pid} instruction #{instruction[:process_operation]} - CPU" 
+      # end
+      puts "\tP#{process.pid} instruction #{instruction[:process_operation]}"
       if instruction[:opcode] == CREATE
         create_file(instruction[:pid], instruction[:file_name], instruction[:blocks_count])
       elsif instruction[:opcode] == DELETE
-        delete_file(instruction[:pid], instruction[:file_name])
+        delete_file(process, instruction[:file_name])
       end
       print_disk
     end

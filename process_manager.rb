@@ -20,7 +20,8 @@ class ProcessCall
     @@pid_count += 1
   end
 
-  def log
+  def dispatcher
+    puts 'dispatcher =>'
     puts "\tPID: #{@pid}\n" \
          "\toffset: #{@offset}\n" \
          "\tblocks: #{@block_count}\n" \
@@ -42,7 +43,7 @@ class ProcessCall
 end
 
 class ProcessManager
-  attr_accessor :ready_processes
+  attr_accessor :ready_processes, :process_running
 
   def initialize(memory_manager)
     # Fila de Escalonamento
@@ -52,6 +53,7 @@ class ProcessManager
     @priority1_process = []
     @priority2_process = []
     @priority3_process = []
+    @process_running = nil
 
     # Read Process file
     File.open("procesu.txt", "r").each_line do |line|
@@ -59,8 +61,12 @@ class ProcessManager
       process = ProcessCall.new(*process_info)
       memory_manager.allocate_process process
       @ready_processes << process
-      process.log
+      process.dispatcher
     end
+  end
+
+  def queue_empty?
+    @real_time_process.empty? && @user_process.empty? && @priority1_process.empty? && @priority2_process.empty? && @priority3_process.empty?
   end
 
   def schedule

@@ -5,12 +5,10 @@ require_relative 'process_manager'
 require_relative 'memory_manager'
 require_relative 'resource_manager'
 
-# puts ARGV[0]
-
 # initialize processes
 memory_manager = MemoryManager.new
-process_manager = ProcessManager.new(memory_manager)
-file_manager = FileManager.new
+process_manager = ProcessManager.new(ARGV[0], memory_manager)
+file_manager = FileManager.new(ARGV[1])
 resource_manager = ResourcesManager.new
 
 # file_manager.execute
@@ -59,7 +57,6 @@ until process_manager.queue_empty? && process_manager.process_running.nil? do
 				process_manager.process_running = process_manager.priority3_process.shift
 				process_manager.process_running.dispatcher
 			end
-			resource_manager.print_usage
     end
 
   # Executa Processo

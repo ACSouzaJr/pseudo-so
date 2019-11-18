@@ -47,7 +47,7 @@ class ProcessManager
   attr_accessor :ready_processes, :process_running
   attr_reader :real_time_process, :user_process, :priority1_process, :priority2_process, :priority3_process
 
-  def initialize(memory_manager)
+  def initialize(process_file_name, memory_manager)
     # Fila de Escalonamento
     @ready_processes = []
     @real_time_process = []
@@ -58,7 +58,7 @@ class ProcessManager
     @process_running = nil
 
     # Read Process file
-    File.open("procesu.txt", "r").each_line do |line|
+    File.open(process_file_name, "r").each_line do |line|
       process_info = line.split(', ').map(&:to_i)
       process = ProcessCall.new(*process_info)
       memory_manager.allocate_process process

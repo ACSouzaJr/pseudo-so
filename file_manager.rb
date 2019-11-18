@@ -17,12 +17,12 @@ end
 
 class FileManager
   attr_reader :disk
-  def initialize
+  def initialize(operation_file_name)
     # Set disk size
     @all_files = {}
 
     # Read operations file
-    operations = IO.readlines('tesuto.txt').map(&:chomp)
+    operations = IO.readlines(operation_file_name).map(&:chomp)
 
     disk_size = operations.shift.to_i
     @disk = Array.new(disk_size, 0)
@@ -104,7 +104,7 @@ class FileManager
 
   def execute(process)
     instruction = @instructions.select { |inst| inst[:pid] == process.pid && process.pc == inst[:process_operation] }.first
-    
+
     if instruction.nil?
       return puts "\tP#{process.pid} instruction #{process.pc} - CPU" 
     end

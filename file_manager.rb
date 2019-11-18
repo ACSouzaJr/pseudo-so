@@ -83,7 +83,7 @@ class FileManager
           offset = i - allocable_files + 1
           @disk[offset..(offset + allocable_files) - 1] = [file_name] * block_count.to_i
           @all_files[file_name] = DiskFile.new(file_name, offset, block_count.to_i, pid.to_i)
-          return puts "O processo #{pid} criou o arquivo #{file_name} (blocos #{(offset..block_count).to_a})"
+          return puts "O processo #{pid} criou o arquivo #{file_name} (blocos #{(offset..(offset + allocable_files) - 1).to_a})"
         end
       else
         allocable_files = 0

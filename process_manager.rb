@@ -4,7 +4,7 @@
 
 class ProcessCall
   @@pid_count = 0
-  attr_accessor :initialization_time, :priority, :cpu_time, :block_count, :printer, :scanner, :modem, :disk_number, :pid, :offset, :pc
+  attr_accessor :initialization_time, :priority, :cpu_time, :block_count, :printer, :scanner, :modem, :driver, :pid, :offset, :pc
   
   def initialize(initialization_time, priority, cpu_time, block_count, printer, scanner, modem, driver)
     @initialization_time = initialization_time
@@ -22,7 +22,7 @@ class ProcessCall
   end
 
   def dispatcher
-    puts 'dispatcher =>'
+    puts "\n dispatcher =>"
     puts "\tPID: #{@pid}\n" \
          "\toffset: #{@offset}\n" \
          "\tblocks: #{@block_count}\n" \
@@ -63,7 +63,6 @@ class ProcessManager
       process = ProcessCall.new(*process_info)
       memory_manager.allocate_process process
       @ready_processes << process
-      process.dispatcher
     end
   end
 
@@ -92,10 +91,5 @@ class ProcessManager
     elsif @user_process.first.priority == 3 && @user_process.length < 1000
       @priority3_process << @user_process.shift
     end
-  end
-
-  def execute
-    # while schedule;
-    # while schedule_user_process;
   end
 end

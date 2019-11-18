@@ -29,7 +29,7 @@ class FileManager
     @disk = Array.new(disk_size, 0)
 
     occupied_block_count = operations.shift.to_i
-    
+
     occupied_block_count.times do
       block = operations.shift.split(', ')
       file_name, offset, block_count = block
@@ -79,11 +79,11 @@ class FileManager
         allocable_files += 1
         # Se o tamanho disponível for suficiente
         if allocable_files == block_count.to_i
-          #6-2+1
+          # 6-2+1
           offset = i - allocable_files + 1
           @disk[offset..(offset + allocable_files) - 1] = [file_name] * block_count.to_i
           @all_files[file_name] = DiskFile.new(file_name, offset, block_count.to_i, pid.to_i)
-          return puts "O processo #{pid} criou o arquivo #{file_name} (blocos #{(offset..block_count).to_a.to_s})"
+          return puts "O processo #{pid} criou o arquivo #{file_name} (blocos #{(offset..block_count).to_a})"
         end
       else
         allocable_files = 0
@@ -93,10 +93,15 @@ class FileManager
   end
 
   def delete_file(process, file_name)
-    return puts "Arquivo #{file_name} não pode ser deletado porque no ecxiste em memoria." unless @all_files.key? file_name
+    unless @all_files.key? file_name
+      return puts "Arquivo #{file_name} não pode ser deletado porque no ecxiste em memoria."
+    end
 
     file = @all_files[file_name]
-    return puts "Processo #{process.pid} não tem permissão para deletar o arquivo #{file_name}" unless file.owner == process.pid || process.real_time?
+    unless file.owner == process.pid || process.real_time?
+      return puts "Processo #{process.pid} não tem permissão para deletar o arquivo #{file_name}"
+    end
+
     # puts file.block_count
     @disk[file.first_block..(file.block_count + file.first_block) - 1] = [0] * file.block_count
     puts "O processo #{process.pid} deletou o arquivo #{file_name}"
@@ -108,8 +113,9 @@ class FileManager
 
     # Se nenhum instrucao for executada usa como ciclo de cpu
     if instruction.nil?
-      return puts "\tP#{process.pid} instruction #{process.pc} - CPU" 
+      return puts "\tP#{process.pid} instruction #{process.pc} - CPU"
     end
+
     puts "\tP#{process.pid} instruction #{instruction[:process_operation]}"
     if instruction[:opcode] == CREATE
       create_file(instruction[:pid], instruction[:file_name], instruction[:blocks_count])
@@ -121,7 +127,7 @@ class FileManager
 
   def print_disk
     print "\n"
-    print "| "
+    print '| '
     @disk.each { |file| print "#{file} | " }
     print "\n"
   end

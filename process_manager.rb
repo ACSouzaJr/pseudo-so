@@ -5,7 +5,7 @@
 class ProcessCall
   @@pid_count = 0
   attr_accessor :initialization_time, :priority, :cpu_time, :block_count, :printer, :scanner, :modem, :driver, :pid, :offset, :pc
-  
+
   def initialize(initialization_time, priority, cpu_time, block_count, printer, scanner, modem, driver)
     @initialization_time = initialization_time
     @priority = priority
@@ -58,7 +58,7 @@ class ProcessManager
     @process_running = nil
 
     # Carrega processos do arquivo
-    File.open(process_file_name, "r").each_line do |line|
+    File.open(process_file_name, 'r').each_line do |line|
       process_info = line.split(', ').map(&:to_i)
       process = ProcessCall.new(*process_info)
       memory_manager.allocate_process process

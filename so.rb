@@ -5,25 +5,27 @@ require_relative 'process_manager'
 require_relative 'memory_manager'
 require_relative 'resource_manager'
 
-# initialize processes
+# Finaliza programa se nao possui arquivos de entrada
+return unless ARGV[0] && ARGV[1]
+
+# Instancia gerenciadores do so
 memory_manager = MemoryManager.new
 process_manager = ProcessManager.new(ARGV[0], memory_manager)
 file_manager = FileManager.new(ARGV[1])
 resource_manager = ResourcesManager.new
 
-# file_manager.execute
 
-# Sort processes on ready order
+# Ordena processos pelo tempo de chegada na fila de pronto
 process_manager.ready_processes.sort_by(&:initialization_time)
 
 # tempo de inicialização começa em 0
-tempo = 0
+cpu_clock = 0
 
 until process_manager.queue_empty? && process_manager.process_running.nil? do
 	# Verifica se existem processos em estado de pronto
 	unless process_manager.ready_processes.empty?
-		# Escalona processos do tempo de chegada = tempo
-		if process_manager.ready_processes.first.initialization_time == tempo
+		# Escalona processos do tempo de chegada = clock
+		if process_manager.ready_processes.first.initialization_time == cpu_clock
 			process_manager.schedule # real time ou usuário
 			process_manager.schedule_user_process # usuário 1, 2 ou 3
 		end
@@ -64,8 +66,7 @@ until process_manager.queue_empty? && process_manager.process_running.nil? do
 		#Decrementa tempo restante e aumenta o numero de instrucoes rodadas
 		process_manager.process_running.cpu_time -= 1
 		
-		# Mostra Saida
-		# logger.executa(process_manager.process_running)
+		# Executa instrução correspondente ao uso da cpu
  		file_manager.execute(process_manager.process_running)
 		process_manager.process_running.pc += 1
 
@@ -75,8 +76,8 @@ until process_manager.queue_empty? && process_manager.process_running.nil? do
 			resource_manager.free_io(process_manager.process_running)
 			memory_manager.deallocate_process(process_manager.process_running)
 			process_manager.process_running = nil
-		# Quantum = 1 -> troca constante
 		end
 	end
-	tempo += 1
+	# Quantum = 1
+	cpu_clock += 1
 end

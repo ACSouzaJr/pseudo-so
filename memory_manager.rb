@@ -9,7 +9,7 @@ class MemoryManager
   attr_reader :memory
 
   def initialize
-    # Memory - 1024 total - 64 real-time - 960 user
+    # Memoria - 1024 total - 64 real-time - 960 user
     @memory = Array.new(1024)
   end
 

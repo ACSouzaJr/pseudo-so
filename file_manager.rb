@@ -18,17 +18,18 @@ end
 class FileManager
   attr_reader :disk
   def initialize(operation_file_name)
-    # Set disk size
+    # Mantem informação de todos os arquivos criados
     @all_files = {}
 
     # Read operations file
     operations = IO.readlines(operation_file_name).map(&:chomp)
 
+    # Inicializa o disco
     disk_size = operations.shift.to_i
     @disk = Array.new(disk_size, 0)
 
     occupied_block_count = operations.shift.to_i
-    # Initialize disk
+    
     occupied_block_count.times do
       block = operations.shift.split(', ')
       file_name, offset, block_count = block
@@ -73,7 +74,6 @@ class FileManager
     #
     @disk.length.times do |i|
       block = @disk[i]
-      # puts block
       # Se o bloco estiver vazio
       if block == 0
         allocable_files += 1
@@ -103,8 +103,10 @@ class FileManager
   end
 
   def execute(process)
+    # Seleciona instrução que sera executada no ciclo de cpu
     instruction = @instructions.select { |inst| inst[:pid] == process.pid && process.pc == inst[:process_operation] }.first
 
+    # Se nenhum instrucao for executada usa como ciclo de cpu
     if instruction.nil?
       return puts "\tP#{process.pid} instruction #{process.pc} - CPU" 
     end

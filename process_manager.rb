@@ -48,7 +48,7 @@ class ProcessManager
   attr_reader :real_time_process, :user_process, :priority1_process, :priority2_process, :priority3_process
 
   def initialize(process_file_name, memory_manager)
-    # Fila de Escalonamento
+    # Filas de Escalonamento
     @ready_processes = []
     @real_time_process = []
     @user_process = []
@@ -57,7 +57,7 @@ class ProcessManager
     @priority3_process = []
     @process_running = nil
 
-    # Read Process file
+    # Carrega processos do arquivo
     File.open(process_file_name, "r").each_line do |line|
       process_info = line.split(', ').map(&:to_i)
       process = ProcessCall.new(*process_info)
@@ -82,6 +82,7 @@ class ProcessManager
   end
 
   def schedule_user_process
+    # Retorna se não tem processos na fila de usuario
     return if @user_process.empty?
 
     if @user_process.first.priority == 1 && @user_process.length < 1000
